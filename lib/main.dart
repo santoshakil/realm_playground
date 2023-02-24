@@ -1,5 +1,6 @@
 import 'dart:isolate';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -7,16 +8,17 @@ import 'package:realm/realm.dart';
 import 'package:realm_playground/data.dart';
 import 'package:synchronized/synchronized.dart';
 
+final schemas = [Student.schema, Teacher.schema, Class.schema];
 late final LocalConfiguration dbConfig;
 late final Realm db;
 final lock = Lock();
 
-void initDB([String? path]) {
+void initDB(String path) {
   final start = DateTime.now().millisecondsSinceEpoch;
   dbConfig = Configuration.local(
-    [Student.schema, Teacher.schema, Class.schema],
-    schemaVersion: 2,
+    schemas,
     path: path,
+    shouldDeleteIfMigrationNeeded: !kReleaseMode,
   );
   db = Realm(dbConfig);
   final end = DateTime.now().millisecondsSinceEpoch;
@@ -99,7 +101,7 @@ class MyApp extends StatelessWidget {
           actions: [
             IconButton(
               icon: const Icon(Icons.delete),
-              onPressed: () {
+              onPressed: () async {
                 final start = DateTime.now().millisecondsSinceEpoch;
                 db.write(() {
                   db.deleteAll<Student>();
@@ -107,6 +109,13 @@ class MyApp extends StatelessWidget {
                 });
                 final end = DateTime.now().millisecondsSinceEpoch;
                 debugPrint('Deleted in ${end - start}ms');
+                await compute(
+                  (path) {
+                    initDB(path);
+                    return Realm.compact(dbConfig);
+                  },
+                  dbConfig.path,
+                );
               },
             ),
           ],
@@ -129,7 +138,7 @@ class RealmList extends StatelessWidget {
       children: [
         Expanded(
           child: StreamBuilder(
-            stream: db.all<Student>().changes,
+            stream: db.query<Student>('id > 100000').changes,
             builder: (_, snapshot) {
               if (!snapshot.hasData) {
                 return const Center(child: CircularProgressIndicator());
