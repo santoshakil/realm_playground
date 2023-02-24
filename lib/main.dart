@@ -161,7 +161,7 @@ class RealmList extends StatelessWidget {
         Expanded(
           child: StreamBuilder(
             stream: db
-                .query<Teacher>('name CONTAINS "T" SORT(name ASC) LIMIT(10)')
+                .query<Teacher>('name CONTAINS "T" SORT(name ASC) LIMIT(1000)')
                 .changes,
             builder: (_, snapshot) {
               if (!snapshot.hasData) {
