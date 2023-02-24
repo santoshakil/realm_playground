@@ -18,7 +18,8 @@ void initDB(String path) {
   dbConfig = Configuration.local(
     schemas,
     path: path,
-    shouldDeleteIfMigrationNeeded: !kReleaseMode,
+    schemaVersion: 1,
+    // shouldDeleteIfMigrationNeeded: !kReleaseMode,
   );
   db = Realm(dbConfig);
   final end = DateTime.now().millisecondsSinceEpoch;
@@ -138,7 +139,7 @@ class RealmList extends StatelessWidget {
       children: [
         Expanded(
           child: StreamBuilder(
-            stream: db.query<Student>('id > 100000').changes,
+            stream: db.all<Student>().changes,
             builder: (_, snapshot) {
               if (!snapshot.hasData) {
                 return const Center(child: CircularProgressIndicator());
@@ -159,7 +160,9 @@ class RealmList extends StatelessWidget {
         ),
         Expanded(
           child: StreamBuilder(
-            stream: db.all<Teacher>().changes,
+            stream: db
+                .query<Teacher>('name CONTAINS "T" SORT(name ASC) LIMIT(10)')
+                .changes,
             builder: (_, snapshot) {
               if (!snapshot.hasData) {
                 return const Center(child: CircularProgressIndicator());

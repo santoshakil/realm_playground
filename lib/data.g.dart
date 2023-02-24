@@ -63,7 +63,7 @@ class Teacher extends _Teacher with RealmEntity, RealmObjectBase, RealmObject {
     RealmObjectBase.registerFactory(Teacher._);
     return const SchemaObject(ObjectType.realmObject, Teacher, 'Teacher', [
       SchemaProperty('id', RealmPropertyType.int, primaryKey: true),
-      SchemaProperty('name', RealmPropertyType.string),
+      SchemaProperty('name', RealmPropertyType.string, indexed: true),
       SchemaProperty('date', RealmPropertyType.mixed,
           optional: true, indexed: true),
       SchemaProperty('students', RealmPropertyType.linkingObjects,
@@ -152,8 +152,8 @@ class Student extends _Student with RealmEntity, RealmObjectBase, RealmObject {
     RealmObjectBase.registerFactory(Student._);
     return const SchemaObject(ObjectType.realmObject, Student, 'Student', [
       SchemaProperty('id', RealmPropertyType.int, primaryKey: true),
-      SchemaProperty('name', RealmPropertyType.string),
-      SchemaProperty('roll', RealmPropertyType.int),
+      SchemaProperty('name', RealmPropertyType.string, indexed: true),
+      SchemaProperty('roll', RealmPropertyType.int, indexed: true),
       SchemaProperty('date', RealmPropertyType.mixed,
           optional: true, indexed: true),
       SchemaProperty('teachers', RealmPropertyType.object,

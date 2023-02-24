@@ -7,6 +7,7 @@ class _Teacher {
   @PrimaryKey()
   late final int id;
 
+  @Indexed()
   String name = '';
 
   @Indexed()
@@ -21,7 +22,9 @@ class _Student {
   @PrimaryKey()
   late final int id;
 
+  @Indexed()
   String name = '';
+  @Indexed()
   int roll = 0;
 
   @Indexed()
