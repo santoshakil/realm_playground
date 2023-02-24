@@ -83,6 +83,7 @@ class Student extends _Student with RealmEntity, RealmObjectBase, RealmObject {
     int roll = 0,
     RealmValue date = const RealmValue.nullValue(),
     Iterable<Teacher> teachers = const [],
+    Iterable<Class> classes = const [],
   }) {
     if (!_defaultsSet) {
       _defaultsSet = RealmObjectBase.setDefaults<Student>({
@@ -97,6 +98,8 @@ class Student extends _Student with RealmEntity, RealmObjectBase, RealmObject {
     RealmObjectBase.set(this, 'date', date);
     RealmObjectBase.set<RealmList<Teacher>>(
         this, 'teachers', RealmList<Teacher>(teachers));
+    RealmObjectBase.set<RealmList<Class>>(
+        this, 'classes', RealmList<Class>(classes));
   }
 
   Student._();
@@ -130,6 +133,13 @@ class Student extends _Student with RealmEntity, RealmObjectBase, RealmObject {
       throw RealmUnsupportedSetError();
 
   @override
+  RealmList<Class> get classes =>
+      RealmObjectBase.get<Class>(this, 'classes') as RealmList<Class>;
+  @override
+  set classes(covariant RealmList<Class> value) =>
+      throw RealmUnsupportedSetError();
+
+  @override
   Stream<RealmObjectChanges<Student>> get changes =>
       RealmObjectBase.getChanges<Student>(this);
 
@@ -148,6 +158,65 @@ class Student extends _Student with RealmEntity, RealmObjectBase, RealmObject {
           optional: true, indexed: true),
       SchemaProperty('teachers', RealmPropertyType.object,
           linkTarget: 'Teacher', collectionType: RealmCollectionType.list),
+      SchemaProperty('classes', RealmPropertyType.object,
+          linkTarget: 'Class', collectionType: RealmCollectionType.list),
+    ]);
+  }
+}
+
+class Class extends _Class with RealmEntity, RealmObjectBase, RealmObject {
+  static var _defaultsSet = false;
+
+  Class(
+    int id, {
+    String name = '',
+  }) {
+    if (!_defaultsSet) {
+      _defaultsSet = RealmObjectBase.setDefaults<Class>({
+        'name': '',
+      });
+    }
+    RealmObjectBase.set(this, 'id', id);
+    RealmObjectBase.set(this, 'name', name);
+  }
+
+  Class._();
+
+  @override
+  int get id => RealmObjectBase.get<int>(this, 'id') as int;
+  @override
+  set id(int value) => throw RealmUnsupportedSetError();
+
+  @override
+  String get name => RealmObjectBase.get<String>(this, 'name') as String;
+  @override
+  set name(String value) => RealmObjectBase.set(this, 'name', value);
+
+  @override
+  RealmResults<Student> get students =>
+      RealmObjectBase.get<Student>(this, 'students') as RealmResults<Student>;
+  @override
+  set students(covariant RealmResults<Student> value) =>
+      throw RealmUnsupportedSetError();
+
+  @override
+  Stream<RealmObjectChanges<Class>> get changes =>
+      RealmObjectBase.getChanges<Class>(this);
+
+  @override
+  Class freeze() => RealmObjectBase.freezeObject<Class>(this);
+
+  static SchemaObject get schema => _schema ??= _initSchema();
+  static SchemaObject? _schema;
+  static SchemaObject _initSchema() {
+    RealmObjectBase.registerFactory(Class._);
+    return const SchemaObject(ObjectType.realmObject, Class, 'Class', [
+      SchemaProperty('id', RealmPropertyType.int, primaryKey: true),
+      SchemaProperty('name', RealmPropertyType.string),
+      SchemaProperty('students', RealmPropertyType.linkingObjects,
+          linkOriginProperty: 'classes',
+          collectionType: RealmCollectionType.list,
+          linkTarget: 'Student'),
     ]);
   }
 }

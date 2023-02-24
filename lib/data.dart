@@ -28,4 +28,16 @@ class _Student {
   RealmValue date = RealmValue.dateTime(DateTime.now());
 
   final teachers = <_Teacher>[];
+  final classes = <_Class>[];
+}
+
+@RealmModel()
+class _Class {
+  @PrimaryKey()
+  late final int id;
+
+  String name = '';
+
+  @Backlink(Symbol('classes'))
+  final students = const Iterable<_Student>.empty();
 }
