@@ -47,7 +47,7 @@ void _writeData(v) {
   final students = <Student>[];
   final length = db.all<Student>().length;
 
-  for (var i = 0; i < 1000000; i++) {
+  for (var i = 0; i < 100000; i++) {
     final teacher = Teacher(i + length)..name = 'Teacher ${i + length}';
 
     final student = Student(i + length)
