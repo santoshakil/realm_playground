@@ -1,0 +1,28 @@
+name: realm_playground
+description: A new Flutter project.
+
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=2.19.2 <3.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.2.0
+  path: ^1.8.2
+  path_provider: ^2.0.13
+  realm: ^1.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^2.0.0
+  # realm_generator: ^1.0.2
+  build_runner: ^2.3.3
+
+flutter:
+  uses-material-design: true
